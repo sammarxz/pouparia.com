@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
+import RootProvider from "@/components/providers/RootProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Pouparia.com",
@@ -16,7 +18,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="pt-br">
-        <body className={`antialiased`}>{children}</body>
+        <body className={`antialiased`}>
+          <Toaster richColors position="bottom-right" />
+          <RootProvider>{children}</RootProvider>
+        </body>
       </html>
     </ClerkProvider>
   );
