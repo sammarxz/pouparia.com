@@ -1,12 +1,17 @@
+import Link from "next/link";
 import { PiggyBank } from "lucide-react";
 
 export function Logo() {
   return (
-    <a href="" className="flex items-center gap-2">
-      <PiggyBank className="stroke h-11 w-11 stroke-lime-400 stroke-[1.5]" />
-      <span className="text-3xl font-semibold tracking-tighter">
+    <Link href="/" className="flex items-center gap-1">
+      <PiggyBank
+        size={28}
+        absoluteStrokeWidth
+        className="stroke stroke-green-400 stroke-[1.5]"
+      />
+      <span className="text-xl font-semibold tracking-tighter -mt-1 text-green-950">
         pouparia.com
       </span>
-    </a>
+    </Link>
   );
 }
