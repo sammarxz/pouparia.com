@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 
-import { Logo } from "@/components/Logo";
 import { WizardForm } from "@/components/wizard/WizardForm";
+import prisma from "@/lib/prisma";
 
 export default async function WizardPage() {
   const user = await currentUser();
@@ -10,9 +10,18 @@ export default async function WizardPage() {
     redirect("/sign-in");
   }
 
+  const userCategories = await prisma.category.findMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  if (userCategories.length > 0) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-8">
-      <Logo />
       <div className="space-y-2">
         <h1 className="text-center text-xl">
           Bem-vindo,{" "}
