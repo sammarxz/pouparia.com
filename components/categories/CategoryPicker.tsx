@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Category, CategoryInput } from "@/types/category";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -20,9 +20,10 @@ import { cn } from "@/lib/utils";
 
 interface CategoryPickerProps {
   type: TransactionType;
+  onChange: (value: string) => void;
 }
 
-export function CategoryPicker({ type }: CategoryPickerProps) {
+export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [search, setSearch] = useState("");
@@ -46,12 +47,17 @@ export function CategoryPicker({ type }: CategoryPickerProps) {
     setSearch(newValue);
   };
 
-  // Função para lidar com a seleção de categoria após criação
   const handleCategoryCreated = (category: Category) => {
     setValue(category.name);
     setSearch("");
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (!value) return;
+
+    onChange(value);
+  }, [onChange, value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -1,11 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 
 import {
   CreateTransactionSchema,
@@ -33,8 +33,14 @@ import {
 import { Calendar } from "../ui/calendar";
 import { CategoryComboBox } from "../categories/CategoryComboBox";
 import { CategoryPicker } from "../categories/CategoryPicker";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
+import { toast } from "sonner";
+import { DateToUTCDate } from "@/lib/utils";
 
 export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
+  const [open, setOpen] = useState(false);
+
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -46,20 +52,54 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
     },
   });
 
-  const onSubmit = (data: CreateTransactionSchemaType) => {
-    console.log(data);
-    // Handle form submission
-  };
-
-  const handleCreateCategory = (name: string, icon: string) => {
-    form.setValue("category", name);
-    // Additional logic for creating a new category if needed
-  };
+  const handleCategoryChange = useCallback((value: string) => {
+    form.setValue("category", value);
+  }, []);
 
   const transactionType = form.watch("type");
 
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: CreateTransaction,
+    onSuccess: () => {
+      toast.success("Transaction created successfully!", {
+        id: "create-transaction",
+      });
+
+      form.reset({
+        type: transactionType,
+        description: "",
+        amount: 0,
+        date: new Date(),
+        category: undefined,
+      });
+
+      // after creating a transaction, we need to invalidade the overview query will refetch in the homepage
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
+
+      setOpen((prev) => !prev);
+    },
+  });
+
+  const onSubmit = useCallback(
+    (values: CreateTransactionSchemaType) => {
+      toast.loading("Creating the transaction...", {
+        id: "create-transaction",
+      });
+
+      mutate({
+        ...values,
+        date: DateToUTCDate(values.date),
+      });
+    },
+    [mutate],
+  );
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -106,9 +146,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
                           variant="outline"
                           className="w-full justify-between text-left font-normal"
                         >
-                          <span>
-                            {format(field.value, "PPP", { locale: pt })}
-                          </span>
+                          <span>{format(field.value, "PPP")}</span>
                           <CalendarIcon className="h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -140,7 +178,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
                       className="flex-1"
                       onClick={() => field.onChange("expense")}
                     >
-                      Despesa
+                      Expense
                     </Button>
                     <Button
                       type="button"
@@ -148,7 +186,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
                       className="flex-1"
                       onClick={() => field.onChange("income")}
                     >
-                      Receita
+                      Income
                     </Button>
                   </div>
                   <FormMessage />
@@ -162,7 +200,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição</FormLabel>
+                  <FormLabel>Transaction Name</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -177,9 +215,12 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Categoria</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <CategoryPicker type={transactionType} />
+                    <CategoryPicker
+                      type={transactionType}
+                      onChange={handleCategoryChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,8 +228,14 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
             />
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full" size="lg">
-              Adicionar Transação
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isPending}
+            >
+              {!isPending && "Create Transaction"}
+              {isPending && <Loader2 className="animate-spin" />}
             </Button>
           </form>
         </Form>
