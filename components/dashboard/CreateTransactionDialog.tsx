@@ -6,11 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
+import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 
 import {
   CreateTransactionSchema,
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -33,10 +36,9 @@ import {
 import { Calendar } from "../ui/calendar";
 import { CategoryComboBox } from "../categories/CategoryComboBox";
 import { CategoryPicker } from "../categories/CategoryPicker";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
-import { toast } from "sonner";
+
 import { cn, DateToUTCDate } from "@/lib/utils";
+import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 
 export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -71,7 +73,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
       form.reset({
         type: transactionType,
         description: "",
-        amount: 0,
+        amount: null,
         date: new Date(),
         category: undefined,
       });
@@ -116,19 +118,25 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
               control={form.control}
               name="amount"
               render={({ field }) => (
-                <FormItem className="relative">
+                <FormItem className="">
+                  <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      className="text-4xl font-bold text-center h-20 px-12 border-none shadow-none"
+                    <NumericFormat
+                      customInput={Input}
+                      value={field.value}
+                      onValueChange={(values) => {
+                        field.onChange(values.floatValue);
+                      }}
+                      prefix="R$"
+                      decimalSeparator=","
+                      thousandSeparator="."
+                      decimalScale={2}
+                      fixedDecimalScale
                       placeholder="0,00"
-                      {...field}
+                      className="font-bold w-full"
                     />
                   </FormControl>
-                  <span className="absolute left-4 top-8 -translate-y-1/2 text-4xl font-bold text-muted-foreground">
-                    R$
-                  </span>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -139,7 +147,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem className="">
                   <FormLabel>Transaction Date</FormLabel>
                   <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                     <PopoverTrigger
