@@ -36,7 +36,6 @@ interface CategoryComboBoxProps {
 export function CategoryComboBox({
   options = [],
   value = "",
-  onValueChangeClient,
   onCreateCategory,
   placeholder = "Selecione uma opção...",
   emptyText = "Nenhuma opção encontrada.",
@@ -98,7 +97,7 @@ export function CategoryComboBox({
                   >
                     <div className="flex items-center flex-1">
                       <Plus className="mr-2 h-4 w-4" />
-                      Criar "{search}"
+                      Criar &apos;{search}&apos;
                     </div>
                   </CommandItem>
                   {filteredOptions.length > 0 && <CommandSeparator />}

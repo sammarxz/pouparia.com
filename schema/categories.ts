@@ -6,6 +6,8 @@ export const CategorySchema = z.object({
   icon: z.string().min(1),
 });
 
+export type CreateCategorySchema = z.infer<typeof CategorySchema>;
+
 export const SetupCategoriesSchema = z.object({
   incomeCategories: z.array(
     z.object({

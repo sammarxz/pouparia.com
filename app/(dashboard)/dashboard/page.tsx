@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getCurrencySymbol } from "@/lib/utils";
+import { CreateTransactionDialog } from "@/components/dashboard/CreateTransactionDialog";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -47,10 +48,14 @@ export default async function DashboardPage() {
         <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
           <p className="text-3xl font-bold">Sumário</p>
           <div className="flex flex-wrap items-center gap-4">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Nova transação
-            </Button>
+            <CreateTransactionDialog
+              trigger={
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova transação
+                </Button>
+              }
+            />
           </div>
         </div>
 
@@ -58,7 +63,7 @@ export default async function DashboardPage() {
           <CardContent className="p-0">
             <div className="space-y-8">
               {/* Net Total */}
-              <div className="flex flex-col md:flex-row gap-y-8 gap-x-12 items-end">
+              <div className="flex flex-col md:flex-row gap-y-8 gap-x-12 md:items-end">
                 <div className="flex flex-col gap-2">
                   <div className="text-sm text-muted-foreground">
                     Total Líquido

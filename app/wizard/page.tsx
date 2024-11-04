@@ -10,15 +10,15 @@ export default async function WizardPage() {
     redirect("/sign-in");
   }
 
-  const userCategories = await prisma.category.findMany({
-    where: {
-      userId: user.id,
-    },
-  });
+  // const userCategories = await prisma.category.findMany({
+  //   where: {
+  //     userId: user.id,
+  //   },
+  // });
 
-  if (userCategories.length > 0) {
-    redirect("/dashboard");
-  }
+  // if (userCategories.length > 0) {
+  //   redirect("/dashboard");
+  // }
 
   return (
     <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-8">
