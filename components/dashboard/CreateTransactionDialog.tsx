@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
-import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 
 import {
   CreateTransactionSchema,
@@ -36,10 +36,11 @@ import { CategoryPicker } from "../categories/CategoryPicker";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
-import { DateToUTCDate } from "@/lib/utils";
+import { cn, DateToUTCDate } from "@/lib/utils";
 
 export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
@@ -109,7 +110,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Amount Input */}
             <FormField
               control={form.control}
@@ -138,25 +139,46 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem>
-                  <Popover>
-                    <PopoverTrigger asChild>
+                <FormItem className="flex flex-col">
+                  <FormLabel>Transaction Date</FormLabel>
+                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                    <PopoverTrigger
+                      asChild
+                      onClick={() => {
+                        setCalendarOpen((prev) => {
+                          console.log("prev", prev);
+                          return !prev;
+                        });
+                      }}
+                    >
                       <FormControl>
                         <Button
                           variant="outline"
-                          className="w-full justify-between text-left font-normal"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
                         >
-                          <span>{format(field.value, "PPP")}</span>
-                          <CalendarIcon className="h-4 w-4 opacity-50" />
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0" align="center">
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setCalendarOpen(false);
+                        }}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
                       />
                     </PopoverContent>
                   </Popover>
