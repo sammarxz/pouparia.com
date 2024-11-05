@@ -10,6 +10,7 @@ import { GetCategoryStatsResponseType } from "@/app/api/stats/categories/route";
 import { TransactionType } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Progress } from "../ui/progress";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface CategoriesStatsProps {
   userSettings: UserSettings;
@@ -94,29 +95,37 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
             </div>
           )}
 
-          {filteredData.map((item) => {
-            const amount = item._sum?.amount ?? 0;
-            const percentage = (amount * 100) / (total || amount);
+          <ScrollArea className="h-60 w-full">
+            <div className="flex w-full flex-col gap-4">
+              {filteredData.map((item) => {
+                const amount = item._sum?.amount ?? 0;
+                const percentage = (amount * 100) / (total || amount);
 
-            return (
-              <div key={item.category} className="relative">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span>{item.categoryIcon}</span>
-                    <span>{item.category}</span>
-                    <span className="text-muted-foreground">
-                      ({percentage.toFixed(0)}%)
-                    </span>
+                return (
+                  <div key={item.category} className="relative">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span>{item.categoryIcon}</span>
+                        <span>{item.category}</span>
+                        <span className="text-muted-foreground">
+                          ({percentage.toFixed(0)}%)
+                        </span>
+                      </div>
+                      <span className="text-sm">
+                        {formatter.format(amount)}
+                      </span>
+                    </div>
+                    <Progress
+                      value={percentage}
+                      indicator={
+                        type === "income" ? "bg-green-500" : "bg-red-500"
+                      }
+                    />
                   </div>
-                  <span className="text-sm">{formatter.format(amount)}</span>
-                </div>
-                <Progress
-                  value={percentage}
-                  indicator={type === "income" ? "bg-green-500" : "bg-red-500"}
-                />
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </ScrollArea>
         </div>
       </CardContent>
     </Card>
