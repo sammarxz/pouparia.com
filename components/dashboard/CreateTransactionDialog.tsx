@@ -34,7 +34,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Calendar } from "../ui/calendar";
-import { CategoryComboBox } from "../categories/CategoryComboBox";
 import { CategoryPicker } from "../categories/CategoryPicker";
 
 import { cn, DateToUTCDate } from "@/lib/utils";
@@ -73,14 +72,14 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
       form.reset({
         type: transactionType,
         description: "",
-        amount: null,
+        amount: undefined,
         date: new Date(),
         category: undefined,
       });
 
       // after creating a transaction, we need to invalidade the overview query will refetch in the homepage
       queryClient.invalidateQueries({
-        queryKey: ["overview"],
+        predicate: (query) => query.queryKey[0] === "overview",
       });
 
       setOpen((prev) => !prev);
@@ -98,7 +97,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
         date: DateToUTCDate(values.date),
       });
     },
-    [mutate],
+    [mutate]
   );
 
   return (
@@ -164,7 +163,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
                           variant="outline"
                           className={cn(
                             "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
+                            !field.value && "text-muted-foreground"
                           )}
                         >
                           {field.value ? (

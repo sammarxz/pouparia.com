@@ -6,6 +6,7 @@ import {
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
 import { currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function CreateTransaction(form: CreateTransactionSchemaType) {
@@ -94,4 +95,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       },
     }),
   ]);
+
+  revalidatePath('/api/stats');
 }

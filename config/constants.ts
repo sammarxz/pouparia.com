@@ -1,5 +1,7 @@
 import { SuggestedCategory } from "@/types/category";
 
+export const MaxDateRange = 90;
+
 export const defaultIncomeCategories = [
   { name: "Salário", icon: "💰" },
   { name: "Freelance", icon: "💻" },

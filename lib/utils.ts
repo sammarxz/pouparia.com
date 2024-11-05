@@ -23,3 +23,10 @@ export function DateToUTCDate(date: Date) {
     ),
   );
 }
+
+export function getFormatterForCurrency(currency: string) {
+  return new Intl.NumberFormat(currency, {
+    style: "currency",
+    currency,
+  });
+}
