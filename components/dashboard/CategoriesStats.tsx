@@ -116,6 +116,7 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
                       </span>
                     </div>
                     <Progress
+                      className="h-1.5 mt-2"
                       value={percentage}
                       indicator={
                         type === "income" ? "bg-green-500" : "bg-red-500"
