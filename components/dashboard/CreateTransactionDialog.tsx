@@ -77,9 +77,8 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
         category: undefined,
       });
 
-      // after creating a transaction, we need to invalidade the overview query will refetch in the homepage
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "overview",
+        queryKey: ["overview"],
       });
 
       setOpen((prev) => !prev);

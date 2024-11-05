@@ -16,7 +16,7 @@ import { Bolt, LayoutDashboard, Menu, Wallet } from "lucide-react";
 const items = [
   {
     label: "Dashboard",
-    link: "/",
+    link: "/dashboard",
     icon: <LayoutDashboard absoluteStrokeWidth />,
   },
   {
@@ -125,7 +125,7 @@ function NavbarItem({
             variant: "ghost",
           }),
           "w-full justify-start text-muted-foreground hover:text-foreground",
-          isActive ?? "text-foreground",
+          isActive ?? "text-foreground"
         )}
         onClick={() => {
           if (handleClick) handleClick();
