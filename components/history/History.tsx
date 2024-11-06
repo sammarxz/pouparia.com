@@ -53,7 +53,7 @@ export function History({ userSettings }: { userSettings: UserSettings }) {
         <CardHeader className="p-0">
           <CardTitle className="grid grid-flow-row justify-between gap-2 md:grid-flow-col">
             <div className="text-xl font-semibold">
-              Transaction&pos;s history
+              Transaction&apos;s history
             </div>
             <HistoryPeriodSelector
               timeframe={timeframe}
