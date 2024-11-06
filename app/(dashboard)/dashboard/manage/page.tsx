@@ -6,8 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { CategoryList } from "@/components/dashboard/CategoriesList";
-import { CurrencyCombobox } from "@/components/dashboard/CurrencyCombobox";
+import { CategoryList } from "@/components/categories/CategoriesList";
+import { CurrencyCombobox } from "@/components/currency/CurrencyCombobox";
 
 export default function ManagePage() {
   return (

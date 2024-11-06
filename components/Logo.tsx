@@ -7,9 +7,9 @@ export function Logo() {
       <PiggyBank
         size={28}
         absoluteStrokeWidth
-        className="stroke stroke-green-400 stroke-[1.5]"
+        className="stroke stroke-green-500 stroke-[1.5]"
       />
-      <span className="text-xl font-semibold tracking-tighter -mt-1 text-green-950">
+      <span className="text-xl font-semibold tracking-tighter -mt-1 text-black">
         pouparia.com
       </span>
     </Link>

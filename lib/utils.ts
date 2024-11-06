@@ -30,3 +30,14 @@ export function getFormatterForCurrency(currency: string) {
     currency,
   });
 }
+
+export function currencyStringToNumber(value: string | number): number {
+  if (typeof value === 'number') return value;
+  
+  // Remove o símbolo da moeda e quaisquer caracteres não numéricos, exceto ponto e vírgula
+  const cleanValue = value
+    .replace(/[^\d,.-]/g, '') // Remove tudo exceto números, vírgula, ponto e sinal negativo
+    .replace(',', '.'); // Substitui vírgula por ponto para converter para número
+    
+  return Number(cleanValue);
+}

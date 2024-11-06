@@ -1,12 +1,12 @@
 "use client";
 
 import { UserSettings } from "@prisma/client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { GetBalanceStatsResponseType } from "@/app/api/stats/balance/route";
 
 import { DateToUTCDate, getFormatterForCurrency } from "@/lib/utils";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Card, CardContent } from "../ui/card";
 import {
   Tooltip,

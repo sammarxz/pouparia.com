@@ -21,11 +21,16 @@ import { Category } from "@prisma/client";
 interface CategoryPickerProps {
   type: TransactionType;
   onChange: (value: string) => void;
+  defaultCategory?: string;
 }
 
-export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
+export function CategoryPicker({
+  type,
+  onChange,
+  defaultCategory,
+}: CategoryPickerProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultCategory ?? "");
   const [search, setSearch] = useState("");
 
   const categoriesQuery = useQuery({
@@ -33,6 +38,13 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
     queryFn: () =>
       fetch(`/api/categories?type=${type}`).then((res) => res.json()),
   });
+
+  // Atualizar value quando defaultCategory mudar
+  useEffect(() => {
+    if (defaultCategory) {
+      setValue(defaultCategory);
+    }
+  }, [defaultCategory]);
 
   const selectedCategory: Category | null = categoriesQuery.data?.find(
     (category: Category) => category.name === value
@@ -53,9 +65,13 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
     setOpen(false);
   };
 
+  const handleSelect = (categoryName: string) => {
+    setValue(categoryName);
+    setOpen(false);
+  };
+
   useEffect(() => {
     if (!value) return;
-
     onChange(value);
   }, [onChange, value]);
 
@@ -73,7 +89,7 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
           ) : (
             <>
               <span>Select a category</span>
-              <ChevronsUpDown />
+              <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
             </>
           )}
         </Button>
@@ -100,16 +116,13 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
               {categoriesQuery.data?.map((category: Category) => (
                 <CommandItem
                   key={category.name}
-                  onSelect={() => {
-                    setValue(category.name);
-                    setOpen(false);
-                  }}
+                  onSelect={() => handleSelect(category.name)}
                 >
                   <CategoryRow category={category} />
                   <Check
                     className={cn(
-                      "mr-2 w-4 h-4 opacity-0",
-                      value === category.name && "opacity-1"
+                      "ml-auto h-4 w-4",
+                      value === category.name ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

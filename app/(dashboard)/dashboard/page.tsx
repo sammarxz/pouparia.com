@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
 import { Overview } from "@/components/dashboard/Overview";
-import { History } from "@/components/dashboard/History";
+import { History } from "@/components/history/History";
 
 export default async function DashboardPage() {
   const user = await currentUser();

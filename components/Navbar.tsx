@@ -45,7 +45,7 @@ function MobileNavbar() {
 
   return (
     <div className="w-full block border-separate bg-background md:hidden">
-      <nav className="flex items-center justify-between px-4">
+      <nav className="flex items-center justify-between">
         <div className="flex h-[80px] min-h-[60px] items-center gap-x-2">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>

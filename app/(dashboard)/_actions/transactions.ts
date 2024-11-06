@@ -98,3 +98,31 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   revalidatePath('/api/stats');
 }
+
+export async function UpdateTransaction({ 
+  id, 
+  ...data 
+}: CreateTransactionSchemaType & { id: string }) {
+  const parsedBody = CreateTransactionSchema.safeParse(data);
+  if (!parsedBody.success) throw new Error("bad request");
+
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+
+  return await prisma.transaction.update({
+    where: { id },
+    data: {
+      ...data,
+      userId: user.id,
+    },
+  });
+}
+
+export async function DeleteTransaction(id: string) {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+
+  return await prisma.transaction.delete({
+    where: { id },
+  });
+}
