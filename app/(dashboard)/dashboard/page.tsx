@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
 import { Overview } from "@/components/dashboard/Overview";
-import { CategoriesStats } from "@/components/dashboard/CategoriesStats";
+import { History } from "@/components/dashboard/History";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -23,8 +23,9 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="h-full bg-background">
+    <div className="h-full bg-background space-y-12">
       <Overview userSettings={userSettings} />
+      <History userSettings={userSettings} />
     </div>
   );
 }

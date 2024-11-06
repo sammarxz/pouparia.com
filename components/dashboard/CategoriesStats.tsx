@@ -37,8 +37,6 @@ export function CategoriesStats({
     return getFormatterForCurrency(userSettings.currency);
   }, [userSettings.currency]);
 
-  console.log(statsQuery.data);
-
   return (
     <SkeletonWrapper isLoading={statsQuery.isFetching}>
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -69,10 +67,6 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
     (acc, item) => acc + (item._sum?.amount ?? 0),
     0
   );
-  const maxAmount = Math.max(
-    ...filteredData.map((item) => item._sum?.amount ?? 0)
-  );
-
   return (
     <Card className="border-none shadow-none p-0">
       <CardHeader className="px-0  pt-0 pb-6">
@@ -85,7 +79,7 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
       <CardContent className="p-0">
         <div className="space-y-4">
           {filteredData.length === 0 && (
-            <div className="flex h-60 w-full flex-col items-center justify-center">
+            <div className="flex h-fit md:h-60 w-full flex-col items-center justify-center">
               <p className="text-base text-muted-foreground">
                 No data to show for this period
               </p>
@@ -95,7 +89,7 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
             </div>
           )}
 
-          <ScrollArea className="h-60 w-full">
+          <ScrollArea className="h-fit md:h-60 w-full">
             <div className="flex w-full flex-col gap-4">
               {filteredData.map((item) => {
                 const amount = item._sum?.amount ?? 0;

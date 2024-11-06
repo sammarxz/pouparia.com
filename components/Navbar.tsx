@@ -20,12 +20,12 @@ const items = [
     icon: <LayoutDashboard absoluteStrokeWidth />,
   },
   {
-    label: "Transações",
+    label: "Transactions",
     link: "/transactions",
     icon: <Wallet absoluteStrokeWidth />,
   },
   {
-    label: "Configurações",
+    label: "Manage",
     link: "/manage",
     icon: <Bolt absoluteStrokeWidth />,
   },
@@ -95,7 +95,7 @@ function DesktopNavbar() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm">
-            Olá, <strong>Samuel</strong>
+            Hello, <strong>Samuel</strong>
           </span>
           <UserButton />
         </div>
