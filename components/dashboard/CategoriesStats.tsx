@@ -11,6 +11,8 @@ import { TransactionType } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { ScrollArea } from "../ui/scroll-area";
+import { BarList } from "../common/BarList";
+import { toast } from "sonner";
 
 interface CategoriesStatsProps {
   userSettings: UserSettings;
@@ -79,7 +81,7 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
       <CardContent className="p-0">
         <div className="space-y-4">
           {filteredData.length === 0 && (
-            <div className="flex h-fit md:h-60 w-full flex-col items-center justify-center">
+            <div className="flex h-fit max-h-60 w-full flex-col items-center justify-center">
               <p className="text-base text-muted-foreground">
                 No data to show for this period
               </p>
@@ -89,36 +91,17 @@ function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
             </div>
           )}
 
-          <ScrollArea className="h-fit md:h-60 w-full">
+          <ScrollArea className="h-fit max-h-60 w-full">
             <div className="flex w-full flex-col gap-4">
-              {filteredData.map((item) => {
-                const amount = item._sum?.amount ?? 0;
-                const percentage = (amount * 100) / (total || amount);
-
-                return (
-                  <div key={item.category} className="relative">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span>{item.categoryIcon}</span>
-                        <span>{item.category}</span>
-                        <span className="text-muted-foreground">
-                          ({percentage.toFixed(0)}%)
-                        </span>
-                      </div>
-                      <span className="text-sm">
-                        {formatter.format(amount)}
-                      </span>
-                    </div>
-                    <Progress
-                      className="h-1.5 mt-2"
-                      value={percentage}
-                      indicator={
-                        type === "income" ? "bg-green-500" : "bg-red-500"
-                      }
-                    />
-                  </div>
-                );
-              })}
+              <BarList
+                data={filteredData.map((item) => ({
+                  name: item.category,
+                  value: item._sum?.amount ?? 0,
+                  categoryIcon: item.categoryIcon, // Isso será usado no badge
+                  type: item.type,
+                }))}
+                valueFormatter={(value) => formatter.format(value)}
+              />
             </div>
           </ScrollArea>
         </div>
