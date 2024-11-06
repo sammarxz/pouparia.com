@@ -15,7 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogClose,
 } from "../ui/dialog";
 import {
   AlertDialog,
@@ -293,7 +292,7 @@ export function CategoryDialog({
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              category "{category?.name}" and all its associated data.
+              category &quot;{category?.name}&quot; and all its associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

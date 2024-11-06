@@ -4,7 +4,7 @@ import { TransactionType } from "@/types/transaction";
 import { useQuery } from "@tanstack/react-query";
 import { SkeletonWrapper } from "../common/SkeletonWrapper";
 import { Card, CardHeader, CardTitle } from "../ui/card";
-import { ArrowDownLeft, ArrowUpRight, Plus, X } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Category } from "@prisma/client";

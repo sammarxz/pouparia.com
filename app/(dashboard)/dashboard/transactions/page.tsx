@@ -78,7 +78,7 @@ export default function TransactionsPage() {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <TransactionsTable dateRange={dateRange} currency={currency.symbol} />
+        <TransactionsTable dateRange={dateRange} />
       </div>
     </div>
   );

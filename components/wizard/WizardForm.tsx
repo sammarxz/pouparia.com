@@ -35,16 +35,10 @@ import { UserSettings } from "@prisma/client";
 import { SkeletonWrapper } from "../common/SkeletonWrapper";
 import { UpdateUserCurrency } from "@/app/wizard/_actions/userSettings";
 import { CreateCategories } from "@/app/wizard/_actions/categories";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { CategoryInput } from "@/types/category";
 import { EmojiPicker } from "../common/EmojiPicker";
 import { CategoryComboBox } from "../categories/CategoryComboBox";
-
-type SetupData = {
-  currency: (typeof currencies)[number] | null;
-  incomeCategories: string[];
-  expenseCategories: string[];
-};
 
 interface Category {
   name: string;

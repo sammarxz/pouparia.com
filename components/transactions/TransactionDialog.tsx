@@ -23,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "../ui/dialog";
 import {
   Form,
@@ -86,9 +85,12 @@ export function TransactionDialog({
     },
   });
 
-  const handleCategoryChange = useCallback((value: string) => {
-    form.setValue("category", value);
-  }, []);
+  const handleCategoryChange = useCallback(
+    (value: string) => {
+      form.setValue("category", value);
+    },
+    [form]
+  );
 
   const transactionType = form.watch("type");
 
@@ -313,7 +315,7 @@ export function TransactionDialog({
               <FormField
                 control={form.control}
                 name="category"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <FormControl>

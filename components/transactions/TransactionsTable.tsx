@@ -32,7 +32,7 @@ import {
 
 import { GetTransactionsHistoryResponse } from "@/app/api/transactions-history/route";
 
-import { cn, DateToUTCDate, getFormatterForCurrency } from "@/lib/utils";
+import { cn, DateToUTCDate } from "@/lib/utils";
 
 import { SkeletonWrapper } from "../common/SkeletonWrapper";
 
@@ -50,7 +50,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-import { DeleteTransactionDialog } from "./DeleteTransactionDialog";
 import { TransactionDialog } from "./TransactionDialog";
 import {
   AlertDialog,
@@ -170,13 +169,7 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-export function TransactionsTable({
-  dateRange,
-  currency,
-}: {
-  dateRange: DateRange;
-  currency: string;
-}) {
+export function TransactionsTable({ dateRange }: { dateRange: DateRange }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 

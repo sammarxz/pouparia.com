@@ -9,10 +9,8 @@ import { SkeletonWrapper } from "../common/SkeletonWrapper";
 import { GetCategoryStatsResponseType } from "@/app/api/stats/categories/route";
 import { TransactionType } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Progress } from "../ui/progress";
 import { ScrollArea } from "../ui/scroll-area";
 import { BarList } from "../common/BarList";
-import { toast } from "sonner";
 
 interface CategoriesStatsProps {
   userSettings: UserSettings;
@@ -65,10 +63,7 @@ interface CategoriesCardProps {
 
 function CategoriesCard({ formatter, type, data }: CategoriesCardProps) {
   const filteredData = data.filter((item) => item.type === type);
-  const total = filteredData.reduce(
-    (acc, item) => acc + (item._sum?.amount ?? 0),
-    0
-  );
+
   return (
     <Card className="border-none shadow-none p-0">
       <CardHeader className="px-0  pt-0 pb-6">
