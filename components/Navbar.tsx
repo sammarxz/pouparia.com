@@ -125,7 +125,7 @@ function NavbarItem({
             variant: "ghost",
           }),
           "w-full justify-start text-muted-foreground hover:text-foreground",
-          isActive ?? "text-foreground"
+          isActive && "text-foreground"
         )}
         onClick={() => {
           if (handleClick) handleClick();
