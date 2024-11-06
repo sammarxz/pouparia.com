@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Category, CategoryInput } from "@/types/category";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import {
@@ -15,8 +14,9 @@ import {
 } from "../ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { TransactionType } from "@/types/transaction";
-import { CreateCategoryDialog } from "./CreateCategoryDialog";
+import { CategoryDialog } from "./CategoryDialog";
 import { cn } from "@/lib/utils";
+import { Category } from "@prisma/client";
 
 interface CategoryPickerProps {
   type: TransactionType;
@@ -34,13 +34,13 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
       fetch(`/api/categories?type=${type}`).then((res) => res.json()),
   });
 
-  const selectedCategory: CategoryInput | null = categoriesQuery.data?.find(
-    (category: CategoryInput) => category.name === value,
+  const selectedCategory: Category | null = categoriesQuery.data?.find(
+    (category: Category) => category.name === value
   );
 
   const filteredCategories = categoriesQuery.data?.filter(
     (category: Category) =>
-      category.name.toLowerCase().includes(search.toLowerCase()),
+      category.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSearchChange = (newValue: string) => {
@@ -86,10 +86,10 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
             onValueChange={handleSearchChange}
           />
           {search && filteredCategories?.length === 0 && (
-            <CreateCategoryDialog
+            <CategoryDialog
               type={type}
               defaultValue={search}
-              onCategoryCreated={handleCategoryCreated}
+              onComplete={(category) => handleCategoryCreated(category)}
             />
           )}
           <CommandEmpty className="px-4 py-2">
@@ -109,7 +109,7 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
-                      value === category.name && "opacity-1",
+                      value === category.name && "opacity-1"
                     )}
                   />
                 </CommandItem>
@@ -122,7 +122,7 @@ export function CategoryPicker({ type, onChange }: CategoryPickerProps) {
   );
 }
 
-function CategoryRow({ category }: { category: CategoryInput }) {
+function CategoryRow({ category }: { category: Category }) {
   return (
     <div className="flex items-center gap-2">
       <span role="img">{category.icon}</span>

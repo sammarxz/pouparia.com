@@ -4,7 +4,6 @@ import { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { pt } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -39,7 +38,13 @@ import { CategoryPicker } from "../categories/CategoryPicker";
 import { cn, DateToUTCDate } from "@/lib/utils";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 
-export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
+export function CreateTransactionDialog({
+  trigger,
+  currency,
+}: {
+  trigger: ReactNode;
+  currency: string;
+}) {
   const [open, setOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -125,7 +130,7 @@ export function CreateTransactionDialog({ trigger }: { trigger: ReactNode }) {
                       onValueChange={(values) => {
                         field.onChange(values.floatValue);
                       }}
-                      prefix="R$"
+                      prefix={currency}
                       decimalSeparator=","
                       thousandSeparator="."
                       decimalScale={2}

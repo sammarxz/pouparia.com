@@ -26,7 +26,7 @@ export async function GET(req: Request) {
       ...(type && { type }), // include type in the filters if it's undefined'
     },
     orderBy: {
-      name: "desc",
+      name: "asc",
     },
   });
 

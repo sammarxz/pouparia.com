@@ -21,12 +21,12 @@ const items = [
   },
   {
     label: "Transactions",
-    link: "/transactions",
+    link: "/dashboard/transactions",
     icon: <Wallet absoluteStrokeWidth />,
   },
   {
     label: "Manage",
-    link: "/manage",
+    link: "/dashboard/manage",
     icon: <Bolt absoluteStrokeWidth />,
   },
 ] as const;

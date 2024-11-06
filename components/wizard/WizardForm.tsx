@@ -16,7 +16,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -56,14 +55,14 @@ export function WizardForm() {
   const router = useRouter();
 
   const [currency, setCurrency] = useState<(typeof currencies)[number] | null>(
-    currencies[0],
+    currencies[0]
   );
 
   const [incomeCategories, setIncomeCategories] = useState<Category[]>(
-    defaultIncomeCategories,
+    defaultIncomeCategories
   );
   const [expenseCategories, setExpenseCategories] = useState<Category[]>(
-    defaultExpenseCategories,
+    defaultExpenseCategories
   );
 
   const [newCategory, setNewCategory] = useState<string>("");
@@ -79,7 +78,7 @@ export function WizardForm() {
     if (!userSettings.data) return;
 
     const userCurrency = currencies.find(
-      (currency) => currency.value === userSettings.data.currency,
+      (currency) => currency.value === userSettings.data.currency
     );
 
     if (userCurrency) setCurrency(userCurrency);
@@ -111,7 +110,7 @@ export function WizardForm() {
       router.push("/dashboard");
     },
     onError: (err) => {
-      toast.error("Erro ao salvar as configurações", err);
+      toast.error("Erro ao salvar as configurações");
       console.log(err);
     },
   });
@@ -129,7 +128,7 @@ export function WizardForm() {
 
       currencyMutation.mutate(currency.value);
     },
-    [currencyMutation],
+    [currencyMutation]
   );
 
   const handleSelectCurrency = (currency: string) => {
@@ -156,15 +155,15 @@ export function WizardForm() {
 
   const removeCategory = (
     type: "income" | "expense",
-    categoryName: string,
+    categoryName: string
   ): void => {
     if (type === "income") {
       setIncomeCategories(
-        incomeCategories.filter((c) => c.name !== categoryName),
+        incomeCategories.filter((c) => c.name !== categoryName)
       );
     } else {
       setExpenseCategories(
-        expenseCategories.filter((c) => c.name !== categoryName),
+        expenseCategories.filter((c) => c.name !== categoryName)
       );
     }
   };
@@ -172,19 +171,19 @@ export function WizardForm() {
   const updateCategoryIcon = (
     type: "income" | "expense",
     categoryName: string,
-    newIcon: string,
+    newIcon: string
   ) => {
     if (type === "income") {
       setIncomeCategories(
         incomeCategories.map((cat) =>
-          cat.name === categoryName ? { ...cat, icon: newIcon } : cat,
-        ),
+          cat.name === categoryName ? { ...cat, icon: newIcon } : cat
+        )
       );
     } else {
       setExpenseCategories(
         expenseCategories.map((cat) =>
-          cat.name === categoryName ? { ...cat, icon: newIcon } : cat,
-        ),
+          cat.name === categoryName ? { ...cat, icon: newIcon } : cat
+        )
       );
     }
   };
@@ -217,29 +216,19 @@ export function WizardForm() {
   const handleExpandSection = (sectionId: string): void => {
     setExpandedSection(expandedSection === sectionId ? "" : sectionId);
   };
-
-  const handleKeyPress = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    type: "income" | "expense",
-  ): void => {
-    if (e.key === "Enter") {
-      addCategory(type);
-    }
-  };
-
   const handleCreateCategory = (
     type: "income" | "expense",
     name: string,
-    icon: string,
+    icon: string
   ) => {
     // Verificar se a categoria já existe
     const categoryExists =
       type === "income"
         ? incomeCategories.some(
-            (cat) => cat.name.toLowerCase() === name.toLowerCase(),
+            (cat) => cat.name.toLowerCase() === name.toLowerCase()
           )
         : expenseCategories.some(
-            (cat) => cat.name.toLowerCase() === name.toLowerCase(),
+            (cat) => cat.name.toLowerCase() === name.toLowerCase()
           );
 
     if (categoryExists) {
