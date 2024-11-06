@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { WizardForm } from "@/components/wizard/WizardForm";
+import prisma from "@/lib/prisma";
 
 export default async function WizardPage() {
   const user = await currentUser();
@@ -9,15 +10,15 @@ export default async function WizardPage() {
     redirect("/sign-in");
   }
 
-  // const userCategories = await prisma.category.findMany({
-  //   where: {
-  //     userId: user.id,
-  //   },
-  // });
+  const userCategories = await prisma.category.findMany({
+    where: {
+      userId: user.id,
+    },
+  });
 
-  // if (userCategories.length > 0) {
-  //   redirect("/dashboard");
-  // }
+  if (userCategories.length > 0 && user.publicMetadata.isWizardCompleted) {
+    redirect("/dashboard");
+  }
 
   return (
     <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-8">
