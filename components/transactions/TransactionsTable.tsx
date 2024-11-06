@@ -32,7 +32,7 @@ import {
 
 import { GetTransactionsHistoryResponse } from "@/app/api/transactions-history/route";
 
-import { cn, DateToUTCDate } from "@/lib/utils";
+import { cn, DateToUTCDate, getFormatterForCurrency } from "@/lib/utils";
 
 import { SkeletonWrapper } from "../common/SkeletonWrapper";
 
@@ -64,6 +64,8 @@ import {
 } from "../ui/alert-dialog";
 import { DeleteTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
+import { UserSettings } from "@prisma/client";
+import { currencies } from "@/config/constants";
 
 type TransactionHistoryRow = GetTransactionsHistoryResponse[0];
 
@@ -168,7 +170,13 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-export function TransactionsTable({ dateRange }: { dateRange: DateRange }) {
+export function TransactionsTable({
+  dateRange,
+  currency,
+}: {
+  dateRange: DateRange;
+  currency: string;
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -337,6 +345,14 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const queryClient = useQueryClient();
 
+  const userSettings = useQuery<UserSettings>({
+    queryKey: ["userSettings"],
+    queryFn: () => fetch("/api/user-settings").then((res) => res.json()),
+  });
+
+  const currency = userSettings.data?.currency ?? "USD";
+  const userCurrency = currencies.find((c) => c.value === currency);
+
   const deleteMutation = useMutation({
     mutationFn: DeleteTransaction,
     onSuccess: () => {
@@ -364,7 +380,7 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <TransactionDialog
-            currency="R$"
+            currency={userCurrency!.symbol}
             transaction={transaction}
             trigger={
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>

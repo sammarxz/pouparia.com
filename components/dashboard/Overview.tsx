@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { UserSettings } from "@prisma/client";
-import { differenceInDays, startOfMonth } from "date-fns";
+import { addDays, differenceInDays, startOfMonth } from "date-fns";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -12,6 +12,7 @@ import { currencies, MaxDateRange } from "@/config/constants";
 import { Summary } from "./Summary";
 import { CategoriesStats } from "@/components/categories/CategoriesStats";
 import { TransactionDialog } from "../transactions/TransactionDialog";
+import { adjustDateRange } from "@/lib/utils";
 
 interface DateRange {
   from: Date;
@@ -21,7 +22,7 @@ interface DateRange {
 export function Overview({ userSettings }: { userSettings: UserSettings }) {
   const [dateRange, setDateRange] = useState<DateRange>({
     from: startOfMonth(new Date()),
-    to: new Date(),
+    to: addDays(new Date(), 1),
   });
 
   const currency = currencies.find(
@@ -36,8 +37,10 @@ export function Overview({ userSettings }: { userSettings: UserSettings }) {
           <div className="w-full flex flex-wrap gap-2 items-center justify-end">
             <DatePickerWithRange
               className="w-full md:w-auto border-none"
-              initialDateFrom={dateRange.from}
-              initialDateTo={dateRange.to}
+              initialDateFrom={
+                adjustDateRange(dateRange.from, dateRange.to).from
+              }
+              initialDateTo={adjustDateRange(dateRange.from, dateRange.to).to}
               onUpdate={(values) => {
                 const { from, to } = values.range;
                 if (!from || !to) return;

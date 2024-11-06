@@ -34,10 +34,28 @@ export function getFormatterForCurrency(currency: string) {
 export function currencyStringToNumber(value: string | number): number {
   if (typeof value === 'number') return value;
   
-  // Remove o símbolo da moeda e quaisquer caracteres não numéricos, exceto ponto e vírgula
   const cleanValue = value
-    .replace(/[^\d,.-]/g, '') // Remove tudo exceto números, vírgula, ponto e sinal negativo
-    .replace(',', '.'); // Substitui vírgula por ponto para converter para número
+    .replace(/[^\d,.-]/g, '') 
+    .replace(',', '.'); 
     
   return Number(cleanValue);
+}
+
+export function startOfDay(date: Date): Date {
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
+}
+
+export function endOfDay(date: Date): Date {
+  const newDate = new Date(date);
+  newDate.setHours(23, 59, 59, 999);
+  return newDate;
+}
+
+export function adjustDateRange(from: Date, to: Date) {
+  return {
+    from: startOfDay(from),
+    to: endOfDay(to)
+  };
 }

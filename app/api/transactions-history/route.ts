@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { getFormatterForCurrency } from "@/lib/utils";
+import { adjustDateRange, getFormatterForCurrency } from "@/lib/utils";
 import { OverviewQuerySchema } from "@/schema/overview";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -32,6 +32,8 @@ export type GetTransactionsHistoryResponse = Awaited<
 >;
 
 async function getTransactionsHistory(userId: string, from: Date, to: Date) {
+  const { from: startDate, to: endDate } = adjustDateRange(from, to);
+
   const userSettings = await prisma.userSettings.findUnique({
     where: {
       userId,
@@ -48,8 +50,8 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     where: {
       userId,
       createdAt: {
-        gte: from,
-        lte: to,
+        gte: startDate,
+        lte: endDate,
       },
     },
     orderBy: {
