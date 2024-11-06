@@ -10,13 +10,44 @@ export default async function WizardPage() {
     redirect("/sign-in");
   }
 
-  const userCategories = await prisma.category.findMany({
-    where: {
-      userId: user.id,
-    },
+  const userSetup = await prisma.$transaction(async (tx) => {
+    const [incomeCategories, expenseCategories, settings] = await Promise.all([
+      // Verifica categorias de receita
+      tx.category.findFirst({
+        where: {
+          userId: user.id,
+          type: "income",
+        },
+        select: { name: true },
+      }),
+      // Verifica categorias de despesa
+      tx.category.findFirst({
+        where: {
+          userId: user.id,
+          type: "expense",
+        },
+        select: { name: true },
+      }),
+      // Verifica configurações do usuário
+      tx.userSettings.findUnique({
+        where: { userId: user.id },
+        select: { currency: true },
+      }),
+    ]);
+
+    return {
+      hasIncomeCategories: !!incomeCategories,
+      hasExpenseCategories: !!expenseCategories,
+      hasSettings: !!settings,
+    };
   });
 
-  if (userCategories.length > 0 && user.publicMetadata.isWizardCompleted) {
+  // Se tiver todas as configurações necessárias, redireciona para o dashboard
+  if (
+    userSetup.hasIncomeCategories &&
+    userSetup.hasExpenseCategories &&
+    userSetup.hasSettings
+  ) {
     redirect("/dashboard");
   }
 
