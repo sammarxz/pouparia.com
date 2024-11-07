@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useSpring, animated } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  PanInfo,
+} from "framer-motion";
 import { ChevronDown, Home, PieChart, Settings } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import { format } from "date-fns";
@@ -39,6 +44,11 @@ export const MobileDashboard = ({ userSettings }: MobileDashboardProps) => {
   const pullThreshold = 200;
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const y = useMotionValue(0);
+  const pullProgress = useTransform(y, [0, pullThreshold], [0, 1]);
+  const scale = useTransform(pullProgress, [0, 1], [0.8, 1]);
+  const opacity = useTransform(pullProgress, [0, 1], [0, 1]);
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: userSettings?.currency || "USD",
@@ -49,45 +59,37 @@ export const MobileDashboard = ({ userSettings }: MobileDashboardProps) => {
     queryFn: () => fetch("/api/transactions").then((res) => res.json()),
   });
 
-  const [{ y }, api] = useSpring(() => ({ y: 0 }));
-
-  const bind = useDrag(
-    ({ movement: [_mx, my], down, cancel }) => {
-      if (containerRef.current?.scrollTop || 0 > 0) return;
-
-      if (my > pullThreshold && down) {
-        cancel();
-        setIsDrawerOpen(true);
-        api.start({ y: 0 });
-        setIsPulling(false);
-      } else if (down) {
-        api.start({ y: my > 0 ? my : 0 });
-        setIsPulling(my > 0);
-      } else {
-        api.start({ y: 0 });
-        setIsPulling(false);
-      }
-    },
-    {
-      filterTaps: true,
-      bounds: { top: 0 },
-      rubberband: true,
+  const handleDragStart = () => {
+    if (containerRef.current?.scrollTop && containerRef.current.scrollTop > 0) {
+      return false;
     }
-  );
+  };
 
-  const progress = y.to([0, pullThreshold], [0, 1]);
+  const handleDrag = (_: any, info: PanInfo) => {
+    const newY = Math.max(0, info.offset.y);
+    y.set(newY);
+    setIsPulling(newY > 0);
+  };
+
+  const handleDragEnd = (_: any, info: PanInfo) => {
+    if (info.offset.y > pullThreshold) {
+      setIsDrawerOpen(true);
+    }
+    animate(y, 0, { type: "spring", bounce: 0.3 });
+    setIsPulling(false);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Pull Indicator */}
-      <animated.div
-        style={{ height: y.to((v) => Math.max(0, v)) }}
+      <motion.div
+        style={{ height: y }}
         className="flex items-center justify-center overflow-hidden"
       >
-        <animated.div
+        <motion.div
           style={{
-            opacity: progress,
-            transform: progress.to((p) => `scale(${0.8 + p * 0.2})`),
+            opacity,
+            scale,
           }}
           className="flex flex-col items-center"
         >
@@ -100,15 +102,20 @@ export const MobileDashboard = ({ userSettings }: MobileDashboardProps) => {
           <span className="text-sm text-muted-foreground">
             {isPulling ? "Release to create" : "Pull to create"}
           </span>
-        </animated.div>
-      </animated.div>
+        </motion.div>
+      </motion.div>
 
       {/* Main Content */}
-      <animated.main
-        {...bind()}
+      <motion.main
         ref={containerRef}
-        style={{ y, touchAction: "pan-x" }}
-        className="flex-1 overflow-y-auto overscroll-y-contain"
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.5}
+        onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
+        style={{ y }}
+        className="flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
       >
         <header className="p-4 flex justify-between items-center">
           <div className="w-8" />
@@ -129,13 +136,13 @@ export const MobileDashboard = ({ userSettings }: MobileDashboardProps) => {
 
           <ScrollArea>
             {transactions?.days.map((day, index) => (
-              <section key={index} className="mb-4">
+              <section key={index} className="py-6 border-b">
                 <div className="flex justify-between items-center">
                   <h2 className="text-sm text-muted-foreground">
                     {format(new Date(day.date), "MMMM d, yyyy")}
                   </h2>
                   <div className="text-right">
-                    <span className="text-sm block">
+                    <span className="text-sm block text-muted-foreground">
                       {formatter.format(day.dayTotal)}
                     </span>
                   </div>
@@ -153,11 +160,14 @@ export const MobileDashboard = ({ userSettings }: MobileDashboardProps) => {
             ))}
           </ScrollArea>
         </div>
-      </animated.main>
+      </motion.main>
 
       {/* Navigation */}
-      <nav className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex justify-around py-2">
+      <nav
+        className="h-16 border-t flex items-center justify-center bg-background/80 backdrop-blur 
+      supports-[backdrop-filter]:bg-background/60"
+      >
+        <div className="w-full flex justify-around">
           <NavButton
             icon={<Home className="w-5 h-5" />}
             isActive={activeTab === "home"}
@@ -189,7 +199,7 @@ const TransactionRow = ({ transaction, formatter }: TransactionRowProps) => {
     transaction;
 
   return (
-    <div className="flex items-center justify-between py-2">
+    <div className="flex items-center justify-between mt-4">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 flex items-center justify-center">
           <span className="text-xl">{categoryIcon}</span>
@@ -223,7 +233,7 @@ const NavButton = ({ icon, isActive, onClick }: NavButtonProps) => (
     size="icon"
     className={cn(
       "rounded-full",
-      isActive ? "text-primary bg-primary/10" : "text-muted-foreground"
+      isActive ? "text-primary" : "text-muted-foreground"
     )}
     onClick={onClick}
   >
