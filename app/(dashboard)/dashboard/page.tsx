@@ -3,8 +3,9 @@ import { currentUser } from "@clerk/nextjs/server";
 
 import prisma from "@/lib/prisma";
 
-import { Overview } from "@/components/dashboard/Overview";
-import { History } from "@/components/history/History";
+// import { Overview } from "@/components/dashboard/Overview";
+// import { History } from "@/components/history/History";
+import { MobileDashboard } from "@/components/mobile/MobileDashboard";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -22,10 +23,5 @@ export default async function DashboardPage() {
     redirect("/wizard");
   }
 
-  return (
-    <div className="h-full bg-background space-y-12">
-      <Overview userSettings={userSettings} />
-      <History userSettings={userSettings} />
-    </div>
-  );
+  return <MobileDashboard userSettings={userSettings} />;
 }
