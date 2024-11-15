@@ -140,7 +140,7 @@ const Counter = ({
     });
 
     return animation.stop;
-  }, [value]);
+  }, [count, value]);
 
   return (
     <div className="tabular-nums">

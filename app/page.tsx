@@ -119,7 +119,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="relativee bg-secondary border h-fit w-full p-12 rounded-sm">
+        <div className="relative bg-neutral-100 border h-fit w-full p-4 rounded-sm">
           <FakeFinanceDashboardCard />
         </div>
       </header>
