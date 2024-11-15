@@ -60,3 +60,11 @@ model YearHistory {
 
   @@id([month, year, userId])
 }
+
+model Waitlist {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}

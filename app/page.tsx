@@ -2,13 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { FakeFinanceDashboardCard } from "@/components/landing/FakeFinanceDashboardCard";
-import { Input } from "@/components/ui/input";
+import { WaitlistForm } from "@/components/landing/WaitListForm";
 
 export default function LandingPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-24">
       <header className="flex flex-col gap-12 items-center text-center">
-        <Image src="/logo-type.svg" width={160} height={48} alt="" />
+        <Image src="/logo.svg" width={54} height={54} alt="" className="" />
         <div className="flex flex-col gap-2">
           <h1 className="w-full pt-8 mx-auto mb-4 text-[28px] md:text-3xl">
             Pouparia{" "}
@@ -72,23 +72,7 @@ export default function LandingPage() {
             />
           </h1>
           <div className="mx-auto w-full max-w-[420px]">
-            <form className="flex flex-row w-full p-1 mb-4 bg-white border shadow-xs rounded-lg">
-              <Input
-                type="email"
-                placeholder="Enter your email address"
-                required
-                name="email"
-                id="email"
-                className="flex-1 shadow-none border-0 px-2 focus:ring-0 text-sm"
-              />
-              <button
-                type="submit"
-                className="py-2 px-3 font-medium text-white bg-secondary rounded-md hover:bg-secondary/90 border border-white/10 text-sm"
-              >
-                Join waitlist
-              </button>
-            </form>
-
+            <WaitlistForm />
             <div className="w-full mx-auto flex space-x-2 items-center justify-center flex-col md:flex-row">
               <div className="flex -space-x-2 overflow-hidden p-2">
                 <Image
@@ -119,7 +103,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="relative bg-neutral-100 border h-fit w-full p-4 rounded-sm">
+        <div className="relative bg-neutral-100 border h-fit w-full p-4 rounded-sm shadow-md">
           <FakeFinanceDashboardCard />
         </div>
       </header>
